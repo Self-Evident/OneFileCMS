@@ -72,6 +72,7 @@ $config_stypes = "*"; // Shown types; files of the given types should show up in
 	// Use $config_stypes exactly like $config_etypes (list of extensions separated by semicolons).
 	// If $config_stypes is set to null - by intention or by error - OFCMS will only display folders.
 	// If $config_stypes is set to the *-wildcard (as per default), all files will show up.
+	// If $config_stypes is set to "html,htm" for example, only file with the extension "html" or "htm" will get listed.
 
 $config_itypes = "jpg,gif,png,bmp,ico"; //image types to display on edit page.
 $config_ftypes = "bin,jpg,gif,png,bmp,ico,svg,txt,cvs,css,php,ini,cfg,conf,asp,js ,htm,html"; // _ftype & _fclass must have same

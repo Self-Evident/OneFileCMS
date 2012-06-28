@@ -173,6 +173,10 @@ GENERATE THE PAGE
 
 ## Change Log
 
+### 3.2.1
+
+- Added the possibility to filter listed files. Now it is possible to -- for instance -- display HTML- and HTM-files only.
+
 ### 3.2.0
 
 - Added a few security improvements.
