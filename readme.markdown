@@ -133,6 +133,9 @@ To report a bug or request a feature, please file an issue via Github. Forks enc
 - Be aware that only some very basic data & error checking is performed.  (But, it's getting better...)  
   On Windows, for instance, it's possible to create folders that are subsequently inaccessible and undeletable by Windows.  (Yea, I found out the hard way...)
 - Multiple login names.
+- Multiple languages support
+- External configuration file, so one doesn't need to edit the php-file
+- Internal documentation with Doxygen
 - Anything else?
 
 --------------------------------------------------------------------------------

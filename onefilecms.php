@@ -1,7 +1,7 @@
 <?php 
 // OneFileCMS - github.com/Self-Evident/OneFileCMS
 
-$version = '3.2.0';
+$version = '3.2.1';
 
 /*******************************************************************************
 Copyright © 2009-2012 https://github.com/rocktronica
@@ -68,6 +68,11 @@ $config_favicon   = "/favicon.ico";
 $config_excluded  = ""; //files to exclude from directory listings- CaSe sEnsaTive!
 
 $config_etypes = "html,htm,xhtml,php,css,js,txt,text,cfg,conf,ini,csv,svg"; //Editable file types.
+$config_stypes = "*"; // Shown types; files of the given types should show up in the file-listing
+	// Use $config_stypes exactly like $config_etypes (list of extensions separated by semicolons).
+	// If $config_stypes is set to null - by intention or by error - OFCMS will only display folders.
+	// If $config_stypes is set to the *-wildcard (as per default), all files will show up.
+
 $config_itypes = "jpg,gif,png,bmp,ico"; //image types to display on edit page.
 $config_ftypes = "bin,jpg,gif,png,bmp,ico,svg,txt,cvs,css,php,ini,cfg,conf,asp,js ,htm,html"; // _ftype & _fclass must have same
 $config_fclass = "bin,img,img,img,img,img,svg,txt,txt,css,php,txt,cfg,cfg ,txt,txt,htm,htm";  // number of values. bin is default.
@@ -105,6 +110,14 @@ $INVALID_CHARS_array = explode(' ', $INVALID_CHARS); // (Space deliminated)
 //Make arrays out of a few $config_variables for actual use later.
 //Also, remove spaces and make lowercase.
 $etypes   = explode(',', strtolower(str_replace(' ', '', $config_etypes))); //editable file types
+
+$SHOWALLFILES = $stypes = false;
+if ($config_stypes == '*') {
+	$SHOWALLFILES = true;
+} else {
+	$stypes   = explode(',', strtolower(str_replace(' ', '', $config_stypes))); //shown file types
+}
+
 $itypes   = explode(',', strtolower(str_replace(' ', '', $config_itypes))); //images types to display
 $ftypes   = explode(',', strtolower(str_replace(' ', '', $config_ftypes))); //file types with icons
 $fclasses = explode(',', strtolower(str_replace(' ', '', $config_fclass))); //for file types with icons
@@ -776,7 +789,7 @@ function Login_response() { //**************************************************
 function List_Files() { // ...in a vertical table ******************************
 //called from Index Page
 
-	global $ONESCRIPT, $ipath, $param1, $ftypes, $fclasses, $excluded_list;
+	global $ONESCRIPT, $SHOWALLFILES, $ipath, $param1, $ftypes, $fclasses, $stypes, $excluded_list;
 
 	$files = scandir('./'.$ipath);
 	natcasesort($files);
@@ -792,20 +805,22 @@ function List_Files() { // ...in a vertical table ******************************
 			//Determine file type & set cooresponding icon type.
 			$ext = end( explode(".", strtolower($file)) );
 			$type = $fclasses[array_search($ext, $ftypes)];
-?>
-			<tr>
-				<td>
-					<?php echo '<a href="'.$ONESCRIPT.$param1.'&amp;f='.rawurlencode($file).'&amp;p=edit" >'; ?>
-					<?php show_icon($type); echo  htmlentities($file), '</a>'; ?>
-				</td>
-				<td class="meta_T meta_size">&nbsp;
-					<?php echo number_format(filesize($ipath.$file)); ?> B
-				</td>
-				<td class="meta_T meta_time"> &nbsp;
-					<script>FileTimeStamp(<?php echo filemtime($ipath.$file); ?>, 1, 0);</script>
-				</td>
-			</tr>
-<?php 
+
+			// Should file of the determined type be shown?
+			if ($SHOWALLFILES || in_array($ext, $stypes)) { ?>
+				<tr>
+					<td>
+						<?php echo '<a href="'.$ONESCRIPT.$param1.'&amp;f='.rawurlencode($file).'&amp;p=edit" >'; ?>
+						<?php show_icon($type); echo  htmlentities($file), '</a>'; ?>
+					</td>
+					<td class="meta_T meta_size">&nbsp;
+						<?php echo number_format(filesize($ipath.$file)); ?> B
+					</td>
+					<td class="meta_T meta_time"> &nbsp;
+						<script>FileTimeStamp(<?php echo filemtime($ipath.$file); ?>, 1, 0);</script>
+					</td>
+				</tr> <?php 
+			}
 		}//end if !is_dir...
 	}//end foreach file
 	echo '</table>';
