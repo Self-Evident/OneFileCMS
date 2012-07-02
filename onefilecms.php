@@ -1,7 +1,7 @@
 <?php 
 // OneFileCMS - github.com/Self-Evident/OneFileCMS
 
-$version = '3.2.1';
+$version = '3.2.3';
 
 /*******************************************************************************
 Copyright © 2009-2012 https://github.com/rocktronica
@@ -32,9 +32,9 @@ SOFTWARE.
 
 
 //Some basic security & error log settings
-ini_set('session.use_trans_sid', 0);    //make sure ULR supplied SESSID's are not used
+ini_set('session.use_trans_sid', 0);    //make sure URL supplied SESSID's are not used
 ini_set('session.use_only_cookies', 1); //Only defaults to 1 (enabled) from 5.3 on
-error_reporting(0); // or (E_ALL &~ E_STRICT) if display and/or log are on.
+error_reporting(E_ALL &~ E_STRICT); //0, or (E_ALL &~ E_STRICT) if display and/or log are on.
 ini_set('display_errors', 'off');
 ini_set('log_errors'    , 'off'); //Ok to turn on for trouble-shooting.
 ini_set('error_log'     , $_SERVER['SCRIPT_FILENAME'].'.log');
@@ -55,8 +55,8 @@ $HASHWORD = 'c3e70af96ab1bfc5669280e98b438e1a8c08ca5e0bb3354c05ceaa6f339fd3f6'; 
 $SALT     = 'somerandomsalt';
 
 $MAX_ATTEMPTS  = 3;   //Max failed login attempts before LOGIN_DELAY starts.
-$LOGIN_DELAY   = 10;  //In seconds.
-$MAX_IDLE_TIME = 600; //In seconds. 600 = 10 minutes.  Other PHP settings can limit its max effective value.
+$LOGIN_DELAY   = 30;  //In seconds.
+$MAX_IDLE_TIME = 600; //In seconds. 600 = 10 minutes.  Other PHP settings may limit its max effective value.
 					  //  For instance, 24 minutes is the PHP default for garbage collection.
 $MAX_IMG_W   = 810;  // Max width to display images. (page container = 810)
 $MAX_IMG_H   = 1000; // Max height.  I don't know, it just looks reasonable.
@@ -67,8 +67,8 @@ $MAX_VIEW_SIZE = 1000000; // If file > $MAX_EDIT_SIZE, don't even view in OneFil
 $config_favicon   = "/favicon.ico";
 $config_excluded  = ""; //files to exclude from directory listings- CaSe sEnsaTive!
 
-$config_etypes = "html,htm,xhtml,php,css,js,txt,text,cfg,conf,ini,csv,svg"; //Editable file types.
-$config_stypes = "*"; // Shown types; files of the given types should show up in the file-listing
+$config_etypes = "html,htm,xhtml,php,css,js,txt,text,cfg,conf,ini,csv,svg,log"; //Editable file types.
+$config_stypes = "*"; // Shown types; only files of the given types should show up in the file-listing
 	// Use $config_stypes exactly like $config_etypes (list of extensions separated by semicolons).
 	// If $config_stypes is set to null - by intention or by error - OFCMS will only display folders.
 	// If $config_stypes is set to the *-wildcard (as per default), all files will show up.
@@ -78,10 +78,40 @@ $config_itypes = "jpg,gif,png,bmp,ico"; //image types to display on edit page.
 $config_ftypes = "bin,jpg,gif,png,bmp,ico,svg,txt,cvs,css,php,ini,cfg,conf,asp,js ,htm,html"; // _ftype & _fclass must have same
 $config_fclass = "bin,img,img,img,img,img,svg,txt,txt,css,php,txt,cfg,cfg ,txt,txt,htm,htm";  // number of values. bin is default.
 
-$EX = '<b>( ! )</b>'; //"EXclaimation point" icon Used in $message's
+$EX = '<b>( ! )</b>'; //EXclaimation point "icon" Used in $message's
 
-$SESSION_NAME = 'OFCMS'; //Also the cookie name. Don't use default ('PHPSESSID')
-// END CONFIGURABLE INFO *******************************************************
+$SESSION_NAME = 'OFCMS'; //Also the cookie name. Change if using multiple copies of OneFileCMS.
+// End CONFIGURABLE INFO *******************************************************
+
+
+
+
+// PROCESSING CONFIGURATION FILE ***********************************************
+# Check if a configuration file does exist:
+$config_file = 'ofcms.ini';
+if (is_file($config_file)) {
+	# Parse file
+	$settings = parse_ini_file($config_file);
+
+	# Configure, which variables can get overwritten by the config file:
+	$overwritable_variables = array(
+		'config_title',
+		'USERNAME',
+		'PASSWORD',
+		'USE_HASH',
+		'HASHWORD',
+		'SALT',
+		'config_stypes');
+
+	# Loop through options and overwrite default configuration
+	foreach($settings as $key => $value) {
+		# Check if variable can get overwritten:
+		if (in_array($key, $overwritable_variables)) {
+			$GLOBALS[$key] = $value;
+		}
+	}
+}
+// End PROCESSING CONFIGURATION FILE *******************************************
 
 
 
@@ -89,7 +119,7 @@ $SESSION_NAME = 'OFCMS'; //Also the cookie name. Don't use default ('PHPSESSID')
 //******************************************************************************
 //Some global system values
 
-ini_set('session.gc_maxlifetime', $MAX_IDLE_TIME); //in case the default is less.
+ini_set('session.gc_maxlifetime', $MAX_IDLE_TIME + 100); //in case the default is less.
 
 //PHP_VERSION_ID is better to use when checking current version as it's an actual number, not a string.
 if (!defined('PHP_VERSION_ID')) {            //PHP_VERSION_ID only available since 5.2.7
@@ -110,15 +140,10 @@ $INVALID_CHARS_array = explode(' ', $INVALID_CHARS); // (Space deliminated)
 
 //Make arrays out of a few $config_variables for actual use later.
 //Also, remove spaces and make lowercase.
-$etypes   = explode(',', strtolower(str_replace(' ', '', $config_etypes))); //editable file types
-
 $SHOWALLFILES = $stypes = false;
-if ($config_stypes == '*') {
-	$SHOWALLFILES = true;
-} else {
-	$stypes   = explode(',', strtolower(str_replace(' ', '', $config_stypes))); //shown file types
-}
-
+  if ($config_stypes == '*') { $SHOWALLFILES = true; }
+  else { $stypes   = explode(',', strtolower(str_replace(' ', '', $config_stypes))); }//shown file types
+$etypes   = explode(',', strtolower(str_replace(' ', '', $config_etypes))); //editable file types
 $itypes   = explode(',', strtolower(str_replace(' ', '', $config_itypes))); //images types to display
 $ftypes   = explode(',', strtolower(str_replace(' ', '', $config_ftypes))); //file types with icons
 $fclasses = explode(',', strtolower(str_replace(' ', '', $config_fclass))); //for file types with icons
@@ -129,8 +154,8 @@ $excluded_list = (explode(",", $config_excluded));
 
 
 function Session_Startup() {//**************************************************
-	global $USERNAME, $PASSWORD, $USE_HASH, $HASHWORD, $EX, $message , $page, $VALID_POST, $MAX_IDLE_TIME, $SESSION_NAME;
-
+	global $USERNAME, $PASSWORD, $USE_HASH, $HASHWORD, $page, $VALID_POST, $MAX_IDLE_TIME, $SESSION_NAME;
+ 
 	$limit    = 0; //0 = session.  
 	$path     = dirname($_SERVER['SCRIPT_NAME']);
 	$domain   = ''; // '' = hostname
@@ -149,36 +174,45 @@ function Session_Startup() {//**************************************************
 	//Logging in?
 	if ( isset($_POST["username"]) || isset($_POST["password"]) ) { Login_response(); }
 
+	session_regenerate_id(true); //Helps prevent session fixation & hijacking.
+
+	if ( $_SESSION['valid'] ) { Verify_IDLE_POST_etc(); }
+	
+	$_SESSION['nuonce'] = sha1(mt_rand().microtime()); //provided in <forms> to verify POST
+
+	chdir($_SERVER["DOCUMENT_ROOT"]); //Allow OneFileCMS.php to be started from any dir on the site.
+}//End Session_Startup() *******************************************************
+
+
+
+
+function Verify_IDLE_POST_etc() { //********************************************
+	global $EX, $message, $VALID_POST, $MAX_IDLE_TIME;
+
 	//Verify consistant user agent... (every little bit helps a little bit) 
-	if ( $_SESSION['valid'] && ($_SESSION['USER_AGENT'] != $_SERVER['HTTP_USER_AGENT']) ) { Logout(); return; }
+	if ( ($_SESSION['USER_AGENT'] != $_SERVER['HTTP_USER_AGENT']) ) { Logout(); }
 
 	//Check idle time
- 	if ( $_SESSION['valid'] && isset($_SESSION['last_active_time']) ) {
+ 	if ( isset($_SESSION['last_active_time']) ) {
 		$idle_time = ( time() - $_SESSION['last_active_time'] );
-		if ( $_SESSION['valid'] && ($idle_time > $MAX_IDLE_TIME) ) {
+		if ( $idle_time > $MAX_IDLE_TIME ) {
 			Logout();
-			$message .= 'Max idle time exceeded... <br>';
-			return;
+			$message .= 'Session expired. <br>';
 		}
 	}
-	$_SESSION['last_active_time'] = time() ;
+
+	$_SESSION['last_active_time'] = time();
 
 	//If POSTing, verify...
-	if ( $_SESSION['valid'] && isset($_POST['nuonce']) ) { 
+	if ( isset($_POST['nuonce']) ) { 
 		if ( $_POST['nuonce'] == $_SESSION['nuonce'] ) {
 			$VALID_POST = 1;
 		}else{
 			Logout();
 			$message .= $EX.' <b>INVALID POST</b><br>';
-			return;
 		}
 	}
-
-	session_regenerate_id(true);
-	$_SESSION['nuonce'] = sha1(mt_rand().microtime()); //provided in <forms> to verify POST
-
-	chdir($_SERVER["DOCUMENT_ROOT"]); //Allow OneFileCMS.php to be started from any dir on the site.
-}//End Session_Startup() *******************************************************
+}//end Verify_IDLE_POST_etc() //************************************************
 
 
 
@@ -222,9 +256,9 @@ function Get_GET() { //*** Get main parameters *********************************
 
 	if (isset($_GET["f"])) {
 		$filename = $ipath.$_GET["f"];
+		if ( !is_file($filename) ) { $filename = ""; $page = "index"; }
 		if ( !is_file($filename) && $_SESSION['valid'] )//Set $message except for login page.
 			{ $message .= $EX.' <b>File does not exist:</b> '.htmlentities($filename).'<br>'; }
-		if ( !is_file($filename) ) { $filename = ""; $page = "index"; }
 	}else{ $filename = ""; }
 
 	if (isset($_GET["p"])) { $page = $_GET["p"]; } 
@@ -257,7 +291,7 @@ function Check_path($path) { // returns first valid path in some/supplied/path/
 	$path = str_replace('\\','/',$path);   //Make sure all forward slashes.
 	$path = trim($path,"/ ."); // trim slashes, dots, and spaces
 
-	//Remove any '.' and '..' parts of the path.  Causes issues in <h2>www \ current \ path \</h2>
+	//Remove any '.' and '..' parts of the path.  Causes issues in <h2>www / current / path /</h2>
 	$pathparts = explode( '/', $path);
 	$len       = count($pathparts);
 	$path      = "";  //Cleaned path.
@@ -292,7 +326,7 @@ function is_empty($path){ //****************************************************
 	for($i = 3; $i; $i--) { $empty = (readdir($dh) === FALSE); }
 	closedir($dh);
 	return $empty;
-}//end is_emtpy() //************************************************************
+}//end is_empty() //************************************************************
 
 
 
@@ -400,14 +434,13 @@ function Cancel_Submit_Buttons($submit_label, $focus) { //**********************
 	// [Cancel] returns to either the index, or edit page.
 	if ($filename == "") {$params = "";}else{ $params = $param2.'&amp;p=edit'; }
 ?>
-	<p></p>
+	<p> 
 	<input type="button" class="button" id="cancel" name="cancel" value="Cancel"
 		onclick="parent.location = '<?php echo $ONESCRIPT.$param1.$params ?>'">
 	<input type="submit" class="button" value="<?php echo $submit_label;?>" style="margin-left: 1.3em;">
-
-<?php
+<?php 
 	if ($focus != ""){ echo '<script>document.getElementById("'.$focus.'").focus();</script>'; }
-
+	//Do not close the <p> tag yet/here. Need to leave it open for edit btn on hash page.
 }// End Cancel_Submit_Buttons() //**********************************************
 
 
@@ -419,7 +452,7 @@ function show_image(){ //*******************************************************
 	$IMG = $filename;
 	$img_info = getimagesize($IMG);
 
-	$W=0; $H=1;
+	$W=0; $H=1; //indexes for $img_info[]
 	$SCALE = 1; $TOOWIDE = 0; $TOOHIGH = 0;
 	if ($img_info[$W] > $MAX_IMG_W) { $TOOWIDE = ( $MAX_IMG_W/$img_info[$W] );}
 	if ($img_info[$H] > $MAX_IMG_H) { $TOOHIGH = ( $MAX_IMG_H/$img_info[$H] );}
@@ -427,7 +460,7 @@ function show_image(){ //*******************************************************
 	if ($TOOHIGH || $TOOWIDE) {
 		if     (!$TOOWIDE)           {$SCALE = $TOOHIGH;}
 		elseif (!$TOOHIGH)           {$SCALE = $TOOWIDE;}
-		elseif ($TOOHIGH > $TOOWIDE) {$SCALE = $TOOWIDE;} //ex:if (.90 > .50)
+		elseif ($TOOHIGH > $TOOWIDE) {$SCALE = $TOOWIDE;} //ex: if (.90 > .50)
 		else                         {$SCALE = $TOOHIGH;}
 	}
 
@@ -451,23 +484,13 @@ function show_favicon(){ //*****************************************************
 
 
 
-function Timeout_Timer($TIMER, $CLASS) { //***************************************************
-	global $MAX_IDLE_TIME;
-?> 
-	<span id='<?php echo $TIMER ?>' class='<?php echo $CLASS ?>'></span>
-	<script>
-		// Setup the countdown timer
-		var SESSION_last_active_time = <?php echo $_SESSION['last_active_time'] ?>;
-		var MAX_IDLE_TIME = <?php echo $MAX_IDLE_TIME ?>; //value also used in timer()
-		var countdown = MAX_IDLE_TIME;  //start value for countdown
-		var Timer = document.getElementById("<?php echo $TIMER ?>");
-		UpdateTimer(); //initialize display
+function Timeout_Timer($COUNT, $ID, $CLASS, $ACTION) { //************************
 
-		//start the timer()
-		var counter = setInterval("timer()",1000); //1000 = 1 second 
-	</script>
-<?php
-} //end Timeout_Timer() //******************************************************
+	return 	'<script>'.
+			'Start_Countdown('.$COUNT.', "'.$ID.'", "'.$CLASS.'", "'.$ACTION.'");'.
+			'</script>';
+
+} //end Timeout_Timer() **************************************************
 
 
 
@@ -653,6 +676,7 @@ function show_icon($type){ //***************************************************
 function Hash_Page() { //******************************************************
 	global $DOC_ROOT, $ONESCRIPT, $param1, $param2, $message, $INPUT_NUONCE, $config_title;
 	$params = '?i='.dirname($ONESCRIPT).'&amp;f='.basename($ONESCRIPT).'&amp;p=edit';
+	if (!isset($_POST['whattohash'])) { $_POST['whattohash'] = ''; }
 ?>
 	<style>#message {font-family: courier; min-height: 3.1em;}
 	li {margin-left: 2em}</style>
@@ -670,12 +694,12 @@ function Hash_Page() { //******************************************************
 	<div class="info">
  	<p>There are two ways to change your OneFileCMS password:<br>
 	<p>
-	1) Simply use the $PASSWORD config variable to store your desired password, and set $USE_HASH = 0 (zero).<br>
+	1) Use the $PASSWORD config variable to store your desired password, and set $USE_HASH = 0 (zero).<br>
 	2) Or, use $HASHWORD to store the hash of your password, and set $USE_HASH = 1.<br>
 
 	<p>Keep in mind that due to a number of widely varied considerations, this is largely an academic excersize. 
 	That is, take the idea that this adds much of an improvement to security with a grain of cryptographic salt.
-	However, it does eleminate the storage of your password in plain text, which is definitely an improvement.*
+	However, it does eleminate the storage of your password in plain text, which is a good thing*
 
 	<p>Anyway, to use the $HASHWORD password option:
 	<ol><li>Type your desired password in the input field above and hit Enter.<br>
@@ -698,16 +722,16 @@ function Hash_Page() { //******************************************************
 
 
 function Hash_response() { //***************************************************
-	global $SALT, $message;
+	global $message;
 	$_POST['whattohash'] = trim($_POST['whattohash']); // trim leading & trailing spaces.
-	$message .= 'Password: '.$_POST['whattohash'].'<br>';
-	$message .= 'Hash &nbsp; &nbsp;: '.hashit($_POST["whattohash"]);
+	$message .= 'Password: '.htmlspecialchars($_POST['whattohash']).'<br>';
+	$message .= 'Hash &nbsp; &nbsp;: '.htmlspecialchars(hashit($_POST["whattohash"]));
 } //end Hash_response() ********************************************************
 
 
 
 
-function Logout(){ //***********************************************************
+function Logout() { //**********************************************************
 	global $page;
 	session_regenerate_id(true);
 	session_unset();
@@ -718,7 +742,6 @@ function Logout(){ //***********************************************************
 	$_SESSION['valid'] = 0;
 	$page = 'login';
 }//end Logout() ****************************************************************
-
 
 
 
@@ -737,7 +760,7 @@ function Login_Page() { //******************************************************
 			<input type="password" name="password" id="password" class="login_input">
 		</p>
 			
-		<input type="submit" class="button" value="Enter">
+		<p><input type="submit" class="button" value="Enter"></p>
 	</form>
 	<script>document.getElementById('username').focus();</script>
 <?php 
@@ -750,36 +773,36 @@ function Login_response() { //**************************************************
 	global $USERNAME, $PASSWORD, $USE_HASH, $HASHWORD, $MAX_ATTEMPTS, $LOGIN_DELAY, 
 		   $EX, $message, $page, $LOGIN_ATTEMPTS;
 
-	$_SESSION['valid'] = 0; // Default to failed login.
+	$_SESSION = array();    //make sure it's empty
+	$_SESSION['valid'] = 0; //Default to failed login.
 
 	if (!is_file($LOGIN_ATTEMPTS)) { file_put_contents($LOGIN_ATTEMPTS, 0); }
-	$attempts          = (int)file_get_contents($LOGIN_ATTEMPTS); //Don't increment yet...
-	clearstatcache();
-	$elapsed           = time() - filemtime($LOGIN_ATTEMPTS);
+	$attempts = (int)file_get_contents($LOGIN_ATTEMPTS); //Don't increment yet...
+	$elapsed  = time() - filemtime($LOGIN_ATTEMPTS);
 
-	if ( ($attempts >= $MAX_ATTEMPTS) && ($elapsed < $LOGIN_DELAY) ){ //if already > max, 
-		$message .= $EX.' <b>Too many invalid login attempts. ('.$attempts.')</b><br>';
-		$message .= 'Please wait '.($LOGIN_DELAY - $elapsed) .' seconds to try again. ';
+	if ($attempts > 0) { $message .= '<b>There have been '.$attempts.' invalid login attempts.</b><br>';}
+	if ( ($attempts >= $MAX_ATTEMPTS) && ($elapsed < $LOGIN_DELAY) ){
+		$message .= 'Please wait '.Timeout_Timer(($LOGIN_DELAY - $elapsed), 'timer0', '', '').' seconds to try again. ';
 		return;
 	}
 
-	//Validate login attempt
-	if ($USE_HASH){ $VALID_PASSWORD = (hashit($_POST['password']) == $HASHWORD); }
-	else          { $VALID_PASSWORD = (       $_POST['password']  == $PASSWORD); }
+	//Validate password
+	if ($USE_HASH) { $VALID_PASSWORD = (hashit($_POST['password']) == $HASHWORD); }
+	else           { $VALID_PASSWORD = (       $_POST['password']  == $PASSWORD); }
 
-	if ( $VALID_PASSWORD && ($_POST['username'] == $USERNAME) ) {
+	//validate login.  Ignore attempt if username & password are blank. 
+	if ( ($_POST['password'] == "") && ($_POST['username'] == "") )  { return;
+	}elseif ( $VALID_PASSWORD && ($_POST['username'] == $USERNAME) ) {
 		session_regenerate_id(true);
-		$_SESSION['USER_AGENT'] = $_SERVER['HTTP_USER_AGENT']; //for simple user consistancy check later.
+		$_SESSION['USER_AGENT'] = $_SERVER['HTTP_USER_AGENT']; //for user consistancy check.
 		$_SESSION['valid'] = 1;
 		$page = "index";
 		unlink($LOGIN_ATTEMPTS); //delete invalid attempt count file
 	}else{
 		file_put_contents($LOGIN_ATTEMPTS, ++$attempts); //increment & save attempt
+		$message  = $EX.' <b>INVALID LOGIN ATTEMPT #'.$attempts.'</b><br>';
 		if ($attempts >= $MAX_ATTEMPTS) {
-			$message .= $EX.' <b>INVALID LOGIN ATTEMPT #'.$attempts.'</b><br>';
-			$message .= 'Please wait '.$LOGIN_DELAY.' seconds to try again. ';
-		}else{
-			$message .= $EX.' <b>INVALID LOGIN ATTEMPT #'.$attempts.'</b> ';
+			$message .= 'Please wait '.Timeout_Timer($LOGIN_DELAY, 'timer0', '', '').' seconds to try again. ';
 		}
 	}
 }//end Login_response() //******************************************************
@@ -790,7 +813,7 @@ function Login_response() { //**************************************************
 function List_Files() { // ...in a vertical table ******************************
 //called from Index Page
 
-	global $ONESCRIPT, $SHOWALLFILES, $ipath, $param1, $ftypes, $fclasses, $stypes, $excluded_list;
+	global $ONESCRIPT, $ipath, $param1, $ftypes, $fclasses, $excluded_list, $stypes, $SHOWALLFILES;
 
 	$files = scandir('./'.$ipath);
 	natcasesort($files);
@@ -800,28 +823,29 @@ function List_Files() { // ...in a vertical table ******************************
 		
 		$excluded = FALSE;
 		if (in_array(basename($file), $excluded_list)) { $excluded = TRUE; };
+
+		//Get file type & check against $stypes (files types to show)
+		$ext = end( explode(".", strtolower($file)) );
+		if ($SHOWALLFILES || in_array($ext, $stypes)) { $SHOWTYPE = TRUE; } else { $SHOWTYPE = FALSE; }
 		
-		if (!is_dir($ipath.$file) && !$excluded) {
-
-			//Determine file type & set cooresponding icon type.
-			$ext = end( explode(".", strtolower($file)) );
+		if ( $SHOWTYPE && !is_dir($ipath.$file) && !$excluded ) {
+			
+			//Set icon type based on file type ($ext).
 			$type = $fclasses[array_search($ext, $ftypes)];
-
-			// Should file of the determined type be shown?
-			if ($SHOWALLFILES || in_array($ext, $stypes)) { ?>
-				<tr>
-					<td>
-						<?php echo '<a href="'.$ONESCRIPT.$param1.'&amp;f='.rawurlencode($file).'&amp;p=edit" >'; ?>
-						<?php show_icon($type); echo  htmlentities($file), '</a>'; ?>
-					</td>
-					<td class="meta_T meta_size">&nbsp;
-						<?php echo number_format(filesize($ipath.$file)); ?> B
-					</td>
-					<td class="meta_T meta_time"> &nbsp;
-						<script>FileTimeStamp(<?php echo filemtime($ipath.$file); ?>, 1, 0);</script>
-					</td>
-				</tr> <?php 
-			}
+?>
+			<tr>
+				<td>
+					<?php echo '<a href="'.$ONESCRIPT.$param1.'&amp;f='.rawurlencode($file).'&amp;p=edit" >'; ?>
+					<?php show_icon($type); echo  htmlentities($file), '</a>'; ?>
+				</td>
+				<td class="meta_T meta_size">&nbsp;
+					<?php echo number_format(filesize($ipath.$file)); ?> B
+				</td>
+				<td class="meta_T meta_time"> &nbsp;
+					<script>FileTimeStamp(<?php echo filemtime($ipath.$file); ?>, 1, 0);</script>
+				</td>
+			</tr>
+<?php 
 		}//end if !is_dir...
 	}//end foreach file
 	echo '</table>';
@@ -856,12 +880,13 @@ function Index_Page(){ //*******************************************************
 
 
 function Edit_Page_Buttons($text_editable, $too_large_to_edit) { //*************
-	global $ONESCRIPT, $param1, $param2;
+	global $ONESCRIPT, $param1, $param2, $MAX_IDLE_TIME;
 	$Button = '<input type="button" class="button" value=';
 	$ACTION = 'onclick="parent.location = \''.$ONESCRIPT.$param1.$param2.'&amp;p=';
 ?>
 	<p class="buttons_right">
 	<?php if ($text_editable && !$too_large_to_edit) { //Show save & reset only if editable file ?> 
+		<?php echo Timeout_Timer($MAX_IDLE_TIME, 'timer1','timer xtra', 'LOGOUT'); ?>
 		<input type="submit" class="button" value="Save"                  onclick="submitted = true;" id="save_file">
 		<input type="button" class="button" value="Reset - loose changes" onclick="Reset_File()"      id="reset">
 		<script>
@@ -919,26 +944,26 @@ function Edit_Page_form($ext, $text_editable, $too_large_to_edit, $too_large_to_
 
 		Edit_Page_Buttons($text_editable, $too_large_to_edit);
 
-	if ($text_editable && !$too_large_to_edit && !$bad_chars) {
-		Edit_Page_scripts();
-		$SEC = fmod($MAX_IDLE_TIME,60);  if ($SEC == 0) { $SEC = "00"; };
-		$MIN = floor($MAX_IDLE_TIME/60); if ($MIN == 0) { $MIN = "00"; };
-		$MAX_MIN_SEC = $MIN.':'.$SEC;
+		if ($text_editable && !$too_large_to_edit && !$bad_chars) {
+			Edit_Page_scripts();
+			$SEC = $MAX_IDLE_TIME;
+			$HRS = floor($SEC/3600);
+			$SEC = fmod($SEC,3600);
+			$MIN = floor($SEC/60);   if ($MIN < 10) { $MIN = "0".$MIN; };
+			$SEC = fmod($SEC,60);    if ($SEC < 10) { $SEC = "0".$SEC; };
+			$HRS_MIN_SEC = $HRS.':'.$MIN.':'.$SEC;
 ?>
-		<div id="edit_notes">NOTES:<ol>
-		<li><b>Remember- your $MAX_IDLE_TIME is <?php echo $MAX_MIN_SEC ?>.
-		<?php Timeout_Timer('timer', 'xtra'); ?> <?php // Countdown to session timeout...?>
-		So save changes before the clock runs out, or the changes will be lost!</b><br>
+			<div id="edit_notes">NOTES:<ol>
+			<li><b>Remember- your $MAX_IDLE_TIME is <?php echo $HRS_MIN_SEC ?>.
+			So save changes before the clock runs out, or the changes will be lost!</b><br>
 
-		<?php //The following line is just a static time stamp of when the idle time runs out. ?>
-		<?php //echo '<b class="xtra">&nbsp;<script>FileTimeStamp('.(time()+$MAX_IDLE_TIME).', 0, 0)</script>  </b>,'?>
+			<?php //The following line is just a static time stamp of when the idle time runs out. ?>
+			<?php //echo '<b class="xtra">&nbsp;<script>FileTimeStamp('.(time()+$MAX_IDLE_TIME).', 0, 0)</script>  </b>,'?>
 
-		<li>On some browsers, such as Chrome, if you click the browser [Back] then browser [Forward] (or vice versa), the file state may not be accurate.  To correct, click the browser's [Reload].
-		<li>Chrome's XSS filters may disable some javascript in a page if the page even <i>appears</i> to contain inline javascript in certain contexts.  This can affect some features of the OneFileCMS edit page when editing files that legitimately contain such code, such as OneFileCMS itself.  However, such files can still be edited and saved with OneFileCMS.  The primary function lost is the incidental change of background colors (red/green) indicating whether or not the file has unsaved changes.  The issue will be noticed after the first save of such a file.
-		</div>
-<?php
-	}
-?>
+			<li>On some browsers, such as Chrome, if you click the browser [Back] then browser [Forward] (or vice versa), the file state may not be accurate.  To correct, click the browser's [Reload].
+			<li>Chrome's XSS filters may disable some javascript in a page if the page even <i>appears</i> to contain inline javascript in certain contexts.  This can affect some features of the OneFileCMS edit page when editing files that legitimately contain such code, such as OneFileCMS itself.  However, such files can still be edited and saved with OneFileCMS.  The primary function lost is the incidental change of background colors (red/green) indicating whether or not the file has unsaved changes.  The issue will be noticed after the first save of such a file.
+			</div>
+		<?php } ?>
 	</form> 
 <?php 
 }//end Edit_Page_form() ********************************************************
@@ -1222,7 +1247,7 @@ function Delete_File_Page() { //************************************************
 	<?php echo $FORM_COMMON ?>
 		<input type="hidden" name="delete_file" value="<?php echo htmlspecialchars($filename); ?>" >
 		<span class="verify"><?php echo htmlentities(basename($filename)); ?></span>
-		<p class="sure"><b>Are you sure?</b></p>
+		<p><b>Are you sure?</b></p>
 		<?php Cancel_Submit_Buttons("DELETE", "cancel"); ?>
 	</form>
 <?php 
@@ -1287,7 +1312,6 @@ function New_Folder_response(){ //**********************************************
 		$message .= $EX.' <b>Folder already exists: ';
 		$message .= htmlentities($new_ipath).'</b>';
 	}elseif (mkdir($new_ipath)) {
-
 		$message .= '<b>Created folder:</b> '.htmlentities($new_name);
 		$ipath    = $new_ipath;  //return to new folder
 		$param1   = '?i='.URLencode_path($ipath);
@@ -1308,7 +1332,7 @@ function Delete_Folder_Page(){ //***********************************************
 		<input type="hidden" name="delete_folder" value="<?php echo htmlspecialchars($ipath); ?>" >
 		<span class="web_root"><?php echo htmlentities($WEB_ROOT.Check_path(dirname($ipath))); ?></span><span 
 		class="verify"><?php echo htmlentities(basename($ipath)); ?></span> /
-		<p class="sure"><b>Are you sure?</b></p>
+		<p><b>Are you sure?</b></p>
 		<?php Cancel_Submit_Buttons("DELETE", "cancel"); ?>
 	</form>
 <?php 
@@ -1378,42 +1402,55 @@ function Load_Selected_Page(){ //***********************************************
 
 
 function Timer_scripts() { //***************************************************
-?><script>
-
+?>
+<script>
 //pad() is also used by the Time_Stamp_scripts()
 function pad(num){ if ( num < 10 ){ num = "0" + num; }; return num; }
 
-function UpdateTimer() {
 
-	var Seconds = countdown ;
-
-	var Days = Math.floor(Seconds / 86400); Seconds = Seconds % 86400;
+function FormatTime(Seconds) {
 	var Hours = Math.floor(Seconds / 3600); Seconds = Seconds % 3600;
 	var Minutes = Math.floor(Seconds / 60); Seconds = Seconds % 60;
+	if ((Hours == 0) && (Minutes == 0)) { Minutes = "" } else { Minutes = pad(Minutes) }
+	if (Hours == 0) { Hours = ""} else { Hours = pad(Hours) + ":"}
 
-	if (Days == 0) { Days = "" }else{ Days = Days + "d :"}
-	if (Days == 0 && Hours == 0){ Hours = ""}else{ Hours = pad(Hours) + ":"}
-
-	var Time_Left = Days + Hours + pad(Minutes) + ":" + pad(Seconds);
-
-	Timer.innerHTML = Time_Left;
+	return (Hours + Minutes + ":" + pad(Seconds));
 }
 
 
-function timer() {
+function Countdown(count, End_Time, Timer_ID, Timer_CLASS, Action){
+	var Timer        = document.getElementById(Timer_ID);
+	var Current_Time = Math.round(new Date().getTime()/1000); //js uses milliseconds
+	    count        = End_Time - Current_Time;
+	var params = count + ', "' + End_Time + '", "' + Timer_ID + '", "' + Timer_CLASS + '", "' + Action + '"';
 
-	//If your pc was suspended or hibernated, the js timer doesn't know that...
-	//This will also account for poor timing by the timer() & setInterval()...
-	current_time = Math.round(new Date().getTime()/1000); //js uses milliseconds
-	if ( (SESSION_last_active_time + MAX_IDLE_TIME) < current_time ) { countdown = 0 ; }
+	Timer.innerHTML = FormatTime(count);
 
-	if ( --countdown < 1) {
-		Timer.innerHTML = 'SESSION EXPIRED';
-		alert('The session was terminated due to inactivity.');
-		clearInterval(counter);
+	if ( (count < 120) && (Action != "") ) { //Two minute warning...
+		Timer.style.backgroundColor = "white";
+		Timer.style.color = "red";
+		Timer.style.fontWeight = "900";
+	}
+
+	if ( count < 1 ) {
+		if ( Action == 'LOGOUT') { 
+			Timer.innerHTML = 'SESSION EXPIRED';
+			//Load login screen, but delay first to make sure really expired:
+			setTimeout('window.location = window.location.pathname',3000); //1000 = 1 second
+		}
 		return;
 	}
-	UpdateTimer();
+	setTimeout('Countdown(' + params + ')',1000);
+}
+
+
+function Start_Countdown(count, ID, CLASS, Action){
+	document.write('<span id="' + ID + '"  class="' + CLASS + '"></span>');
+
+	var Time_Start  = Math.round(new Date().getTime()/1000);
+	var Time_End    = Time_Start + count;
+
+	Countdown(count, Time_End, ID, CLASS, Action); //(seconds to count, id of element)
 }
 </script>
 <?php }//end Timer_scripts() ***************************************************
@@ -1587,7 +1624,7 @@ function style_sheet(){ //****************************************************?>
 
 body { font-size: 1em; background: #DDD; font-family: sans-serif; }
 
-p, table { margin-bottom: .5em; margin-top: .5em;}
+p, table { margin-bottom: .8em; margin-top: .8em;}
 
 div { position: relative; }
 
@@ -1612,7 +1649,7 @@ label { display: inline-block; width : 6em; font-size : 1em; font-weight: bold; 
 
 svg { margin: 0; padding: 0; }
 
-pre { /*Used when trouble shooting around test output*/
+pre { /*Used around test output when trouble shooting*/
 	background: white;
 	border: 1px solid #807568;
 	padding: .5em;
@@ -1854,7 +1891,7 @@ input[disabled]:hover { background-color: rgb(236,233,216);  }
 .login_page {
 	margin  : 5em auto;
 	border  : 1px solid #807568;
-	padding : 1em 1em 0 1em;
+	padding : .5em 1em .6em 1em;
 	width   : 370px;
 	}
 
@@ -1864,20 +1901,27 @@ input[disabled]:hover { background-color: rgb(236,233,216);  }
 	border  : 1px solid #807568;
 	padding : 2px 0px 2px 2px;
 	width   : 366px;
-	font    : 1em "Courier New";
+	font    : 1em courier;
 	}
 
 .login_page input[type="text"]{ width   : 364px; }
 
 
-/* --- --- --- */
-hr { 
+
+#upload_file {
+	border: 1px solid #807568;
+	padding: 2px;
+	width: 50em;
+	}
+
+
+hr { /*-- -- -- -- -- -- --*/
 	line-height  : 0;
 	Xfont-size    : 1px;
 	display : block;
 	position: relative;
 	padding : 0;
-	margin  : 1em auto;
+	margin  : .8em auto;
 	width   : 100%;
 	clear   : both;
 	border  : none;
@@ -1885,8 +1929,6 @@ hr {
 	Xborder-bottom: 1px solid #eee;
 	overflow: visible;
 	}
-
-.web_root { font:1em Courier; }
 
 .verify {
 	border: 1px solid #F44;
@@ -1896,20 +1938,13 @@ hr {
 	font: 1.2em Courier;
 	}
 
-.sure { margin: .7em 0em .5em 0; }
+#admin {padding: .3em;}
+
+.web_root { font:1em Courier; }
 
 .icon {float: left; margin: 0 .3em 0 0;}
 
 .mono {font-family: courier;}
-
-#upload_file {
-	border: 1px solid #807568;
-	padding: 2px;
-	width: 50em;
-	Xfont: 1em "Courier New", Courier, monospace;
-	}
-
-#admin {padding: .3em;}
 
 .info {margin-top: .7em; background: #f9f9f9; padding: .2em .5em;}
 
@@ -1917,9 +1952,9 @@ hr {
 
 .edit_onefile {padding: 5px; float: right;}
 
-.xtra {color: red; background: white; font-weight: bold;}
+.xtra {color: red; background: #EEE;}
 
-#timer {border: 1px solid gray; padding: .1em .5em;}
+.timer {border: 1px solid gray; padding: 3px .5em 4px .5em;}
 
 .timeout {float:right; font-size: .95em; color: #333}
 </style>
@@ -1955,37 +1990,37 @@ if ($_SESSION['valid']) {
 		elseif (isset($_POST["rename_folder"])) { Copy_Ren_Move_response($_POST[ "old_name"], $_POST["rename_folder"], 'rename', 'Rename/Move', 'Renamed/Moved', 0); } 
 		elseif (isset($_POST["delete_folder"])) { Delete_Folder_response(); }
 	}//end if ($VALID_POST) ****************************************************
-}
 
 
-//*** Verify valid $page and/or $filename **************************************
+	//*** Verify valid $page and/or $filename **********************************
 
-        //Don't load login screen if already in a valid session.
-if     ( ($page == "login") && ($_SESSION['valid']) ) { $page = "index"; }
+		//Don't load login screen if already in a valid session.
+	if     ( $_SESSION['valid'] && ($page == "login") )  { $page = "index"; }
 
 		//Don't load edit page if $filename doesn't exist.
-elseif ( ($page == "edit")  && !is_file($filename) )  { $page = "index"; }
+	elseif ( ($page == "edit")  && !is_file($filename) ) { $page = "index"; }
 
-elseif ($page == "logout") {
+	elseif ($page == "logout") {
 		Logout();
 		$message .= 'You have successfully logged out.'; }
 
 		//Don't load delete page if folder not empty.
-elseif ( ($page == "deletefolder") && !is_empty($ipath) ) {
-	   $message .= $EX.' <b>Folder not empty. &nbsp; Folders must be empty before they can be deleted.</b>';
-	   $page = "index";}
+	elseif ( ($page == "deletefolder") && !is_empty($ipath) ) {
+		$message .= $EX.' <b>Folder not empty. &nbsp; Folders must be empty before they can be deleted.</b>';
+		$page = "index";}
 
 		//if size of $_POST > post_max_size, PHP only returns empty $_POST & $_FILE arrays.
-elseif ($page == "uploaded" && !$VALID_POST){
-	   $message .= $EX.'<b> Upload Error.  Total POST data (mostly filesize) exceeded post_max_size = '.ini_get('post_max_size').' (from php.ini).</b>';
-	   $page = "index";}
+	elseif ($page == "uploaded" && !$VALID_POST){
+		$message .= $EX.'<b> Upload Error.  Total POST data (mostly filesize) exceeded post_max_size = '.ini_get('post_max_size').' (from php.ini).</b>';
+		$page = "index";}
 
-elseif ( ($page == "edit") && ($filename == trim(rawurldecode($ONESCRIPT), '/')) ) { 
-	   if ( $message == "" ){ $BR = ""; }else{ $BR = '<br>';}
-	   $message .= '<style>#message p {background: red; color: white;}</style>';
-	   $message .= $BR.$EX.' <b>CAUTION '.$EX.' You are editing the active copy of OneFileCMS - BACK IT UP &amp; BE CAREFUL !!</b>'; }
-
-//******************************************************************************
+	elseif ( ($page == "edit") && ($filename == trim(rawurldecode($ONESCRIPT), '/')) ) { 
+		if ( $message == "" ) { $BR = ""; } else { $BR = '<br>';}
+		$message .= '<style>#message p {background: red; color: white;}</style>';
+		$message .= $BR.$EX.' <b>CAUTION '.$EX.' You are editing the active copy of OneFileCMS - BACK IT UP &amp; BE CAREFUL !!</b>';
+	}
+	//**************************************************************************
+}//end if $_SESSION[valid] *****************************************************
 
 
 
@@ -2004,9 +2039,9 @@ elseif ( ($page == "edit") && ($filename == trim(rawurldecode($ONESCRIPT), '/'))
 
 <?php style_sheet(); ?>
 
-<?php if ( ($page == "index") || ($page == "edit") ) { Time_Stamp_scripts(); } ?>
-
 <?php Timer_scripts() ?>
+
+<?php if ( ($page == "index") || ($page == "edit") ) { Time_Stamp_scripts(); } ?>
 
 </head>
 <body>
@@ -2028,27 +2063,26 @@ elseif ( ($page == "edit") && ($filename == trim(rawurldecode($ONESCRIPT), '/'))
 	</div><div style="clear:both;"></div>
 </div><!-- end header -->
 
-<?php if ( $page != "login"  &&  $page != "hash" ){ Current_Path_Header(); } ?>
+<?php if ( $page != "login"  &&  $page != "hash" ) { Current_Path_Header(); } ?>
 
 <?php message_box() ?>
 
 <?php Load_Selected_Page() ?>
 
-<hr>
+<?php if ($page != "login") { echo '<hr>'; } ?>
 
 <?php
 //Admin link
-if ( ($page != "hash") && ($_SESSION['valid']) ){
-echo '<a id="admin" href="'.$ONESCRIPT.$param1.$param2.'&amp;p=hash">Admin</a>'; }
+if ( ($page != "login") && ($page != "hash") ){
+echo '<p><a id="admin" href="'.$ONESCRIPT.$param1.$param2.'&amp;p=hash">Admin</a>'; }
 
 //Countdown timer...
-if ( $page != "edit" && $page != login) {
-	Timeout_Timer('timer', 'timeout');
+if ( $page != "login" ) {
+	echo Timeout_Timer($MAX_IDLE_TIME, 'timer0', 'timer timeout', 'LOGOUT');
 	echo '<span class="timeout">Session time out in:&nbsp;</span>';
-} 
+}
 ?>
 
 </div><!-- end container/login_page -->
 </body>
 </html>
- 

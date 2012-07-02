@@ -8,7 +8,7 @@ OTHER GLOBAL VALUES
 
 MISC FUNCTIONS:
 	Session_Startup()
-        Verify_IDLE_POST_etc()
+	Verify_IDLE_POST_etc()
 	hashit()
 	undo_magic_quotes()
 	Get_GET()
@@ -51,7 +51,7 @@ PAGE & RESPONSE FUNCTIONS:
 	Logout()
 	Login_Page()
 	Login_Page_response()
-	list_files()
+	List_Files()
 	Index_Page()
 	Edit_Page_Buttons()
 	Edit_Page_form()
