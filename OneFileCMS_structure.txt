@@ -4,9 +4,15 @@ SOME BASIC SECURITY & ERROR LOG SETTINGS
 
 CONFIGURATION SECTION
 
+GET EXTERNAL CONFIG (if exists)
+
 OTHER GLOBAL VALUES
 
+LANGUAGE SETTINGS
+
 MISC FUNCTIONS:
+	hsc()
+	Load_Default_Language()
 	Session_Startup()
 	Verify_IDLE_POST_etc()
 	hashit()
@@ -53,8 +59,10 @@ PAGE & RESPONSE FUNCTIONS:
 	Login_Page_response()
 	List_Files()
 	Index_Page()
-	Edit_Page_Buttons()
+	Edit_Page_buttons_top()
+	Edit_Page_buttons()
 	Edit_Page_form()
+	Edit_Page_notes()
 	Edit_Page()
 	Edit_Page_response()
 	Upload_Page()
@@ -77,15 +85,15 @@ JAVASCRIPT & STYLESHEET FUNCTIONS:
 	Time_Stamp_scripts()
 	Edit_Page_scripts()
 	style_sheet()
-	
+
 LOGIC TO DETERMINE PAGE ACTION
 	Verify good PHP version
+	Get language settings
 	Call Session_Startup()
 	Call Get_GET()
 	Call Init_Macros()
 	If VALID_POST 
 		Do $_POST['someaction'] (<someaction>_response)
 	Validate $page to show
-	
+
 GENERATE/OUTPUT <HTML>...  
-  

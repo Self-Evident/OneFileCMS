@@ -1,28 +1,10 @@
-# Current stable version: 3.2.3
+# Current stable version: 3.3.1
 
-### July 1, 2012
+### July 10, 2012
 
-Most of the recent changes have been to increase login and session security. However, I'm slowly learning that there's only so much that can be done, particulary when the base connection is un-encrypted.   Online security, it seems, is a nebulous subject of a rather dubious nature.  Never-the-less, I have tried to do those things that can be done.  
-
-So, for those that care, here is a synopsis of the measures that have been employed:
-- A password's hash can now be stored by OneFileCMS, instead of the plain text password.  
-  (The plain text method remains an option for those that just don't care. )
-- A Login delay is triggered after too many invalid attempts.
-- Adjustable max idle time before auto-logout.
-- Check consistancy of user agent during session.
-- Generation of a new session id after login or logout.
-- Set session.use_only_cookies == true.
-- Use httponly cookies
-- Ability to modify the default salt and password hash method.  
-  (Since OneFileCMS is open source, this is recommended)
-    
-Now, keep in mind that while, individually, any one of these measures may not provide much security, collectivly, they're a little better than nothing.  
+Added support for optional external language files.  The default, English, is included directly in OneFileCMS, of course.  Now to get some translations...  
+A sample language file is included in the repo for reference for anyone that may be interested.
   
-Lastly, always remember that some of the most important security measures concern user behavior - such as avoiding the use of un-encrypted wifi connections...
-  
-- 3+ : "Full" version - uses svg icons
-- 2+ : "Lite" version - uses no icons.
-
 --------------------------------------------------------------------------------
 
 # OneFileCMS
@@ -48,7 +30,9 @@ Coupling a utilitarian code editor with basic file managing functions, OneFileCM
  
 - All the basic features of an FTP application like renaming, deleting, copying, and uploading
   _(Of course, for more complex processes like batch renaming or mass uploads/deletions, you're going to want to break out an actual FTP program.)_
-- Alert if you try to leave without saving your edits
+- Alert if you try to leave without saving your edits.
+- A Login delay after too many invalid attempts.
+- Adjustable idle time before auto-logout.
 - Easily modifiable & re-brandable.
 - Possibly the easiest installation process ever!
 
@@ -82,7 +66,7 @@ Yes, of course!
 
 I may not have the time/bandwidth/inclination to implement every feature, but I'll do what I can. If it's urgent, contact me.  
 
-Otherwise, try [forking the file and submitting your changes to me](https://github.com/blog/844-forking-with-the-edit-button).
+In anycase, try [forking the file and submitting your changes to me](https://github.com/blog/844-forking-with-the-edit-button).
 
 ### This is basically just a file manager with a text editor. Why is it being called a Content Management System?
 
@@ -90,11 +74,11 @@ Well, because "OneFileFileManagerTextEditor" just doesn't have the same ring to 
 
 ### Multi-Language Support?
 
-Probably not, as that would also most likely make it more than "OneFile".
+Yes!  (But only English is included so far...)
 
 ### Can I have more than one username/password?
 
-Yes!  Well, sort of, indirectly.  Upload or create addional copies of OneFileCMS, but give them different file names.(ie: OneFile1.php and OneFile2.php etc...)  Then, with each copy, maintain different user names and passwords.  Also, so one user does not log out the other, change the session names.  
+Yes!  Well, sort of - indirectly.  Upload or create addional copies of OneFileCMS, but give them different file names.(ie: OneFile1.php and OneFile2.php etc...)  Then, with each copy, maintain different user names and passwords.  Also, so one user does not log out the other, change the session names.  
   
 Now, since there is no database or other means of granular control and acess logging, multiple users may be kind of pointless.  On the other hand, having at least one working backup copy of OneFileCMS available is recommended in case the primary copy gets corrupted.
 
@@ -104,7 +88,8 @@ Now, since there is no database or other means of granular control and acess log
   (Only tested on versions 5.2.17, 5.3.3, 5.4, and 5.4.3)
 - File permission privileges on your host
 - Javascript enabled browswer
-- And, for OneFileCMS 3+, a browser that supports inline SVG.
+- And, for OneFileCMS 3+, a browser that supports inline SVG.  
+  (Even if your browser doesn't support SVG, OneFileCMS will still work, just without any icons.)
 
 ## Credit, License, Et Cetera
 
@@ -126,7 +111,6 @@ To report a bug or request a feature, please file an issue via Github. Forks enc
   (However, this is true of most online login systems, unless SSL or the like is employed.)
 - Be aware that only some very basic data & error checking is performed.  (But, it's getting better...)  
   On Windows, for instance, it's possible to create folders that are subsequently inaccessible and undeletable by Windows.  (Yea, I found out the hard way...)
-- Multiple languages support
 - Anything else?
 
 --------------------------------------------------------------------------------
@@ -136,37 +120,46 @@ To report a bug or request a feature, please file an issue via Github. Forks enc
 CONFIGURATION SECTION  
   
 SOME STANDARD GLOBAL VARIABLES  
-  
+
+DEFAULT LANGUAGE
+
 SESSION & MISC FUNCTIONS  
   
 SVG ICON FUNCTIONS  
   
 PAGE & RESPONSE FUNCTIONS  
-    Index, Upload, New, Copy, Rename, etc...  
   
-JAVASCRIPT & STYLESHEET FUNCTIONS  
+JAVASCRIPT FUNCTIONS  
+  
+STYLESHEET  
   
 LOGIC TO DETERMINE PAGE ACTION  
-    Call Session\_Startup()  
-    Call Get\_GET()  
-    Call Init\_Macros()  
-    If $VALID\_POST, do $\_POST['someaction']  
-    Validate which $page to show  
   
-GENERATE THE PAGE  
-    &lt;HTML&gt;  
-    ...  
-    Load\_Selected\_Page($page)  
-    ...  
-    &lt;/HTML&gt;  
+GENERATE/OUTPUT THE PAGE  
 
 --------------------------------------------------------------------------------
 
 ## Change Log
 
+### 3.3.1
+
+- Added WYSIWYG-mode: only for webbrowsers that support the designMode; feature is in BETA-stadium. To use it, simply enable $HTML_WYSIWYG_EDIT
+- Added german translation file; many strings translated
+
+
+### 3.3.0
+
+- Added support for optional external language files.   Now to get some translations...  
+- The default, English, is included directly in OneFileCMS, of course.
+- A sample language file (English) is included in the repo for reference for anyone that may be interested.
+
+
 ### 3.2.3
 
-- Added support for a configuration file (ofcms.ini)
+- Thanks to github.com/codeless: added the ability to process a seperate config file.  
+  (This is just an option for flexibility, and is not required)
+- Added a [Wide View] button to Edit page.
+- Some minor code improvement & css tweaking.
 
 ### 3.2.2
 
@@ -194,12 +187,12 @@ GENERATE THE PAGE
 
 ### 3.1.6 thru 3.1.8
 
-- Converted bulk of rest of code into functions (easier to work with)
+- Converted bulk of rest of code into functions (easier to work with).
 - Resolved issue (I hope) with differing versions of PHP and how magic_quotes & stripslashes are handeled.
 
 ### 3.1.2 thru 3.1.5
 
-- Added file size limits to the Edit/View page. (Some browsers don't like large files in an HTML textarea.
+- Added file size limits to the Edit/View page. (Some browsers don't like large files in an HTML textarea.)
 - Added some data validation to _GET parameters
 - Some misc code cleanup & organization etc.
 - And other misc stuff...
@@ -278,12 +271,13 @@ GENERATE THE PAGE
 
 ### 1.1.6
 
-- Breadcrumb navigation (courtesy of [Self-Evident](https://github.com/Self-Evident/)), CSS file and some minor changes to it<br />
-  Installation is still as usual, but, now, if you have _onefilecms.css_ in the same folder as _onefilecms.php_, it'll be linked instead of the normal [http://onefilecms.com/style.css](http://onefilecms.com/style.css).
+- Breadcrumb navigation (courtesy of [Self-Evident](https://github.com/Self-Evident/)), CSS file and some minor changes to it
+- Installation is still as usual, but now, if you have _onefilecms.css_ in the same folder as _onefilecms.php_, it'll be linked instead of the normal [http://onefilecms.com/style.css](http://onefilecms.com/style.css).
 
 ### 1.1.5
 
-- Fixed a disallowed redirect vulnerability<br />Many thanks to Abhi M Balakrishnan from [OWASP Mantra Team](http://www.getmantra.com/) for his help
+- Fixed a disallowed redirect vulnerability  
+Many thanks to Abhi M Balakrishnan from [OWASP Mantra Team](http://www.getmantra.com/) for his help
 
 ### 1.1.4
 
