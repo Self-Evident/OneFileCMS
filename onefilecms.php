@@ -1,7 +1,7 @@
 <?php 
 // OneFileCMS - github.com/Self-Evident/OneFileCMS
 
-$version = '3.3.01';  //#####
+$version = '3.3.02';  //#####
 
 /*******************************************************************************
 Copyright © 2009-2012 https://github.com/rocktronica
@@ -56,6 +56,8 @@ $SALT     = 'somerandomsalt';
 
 $LANGUAGE = "X-OneFileCMS.LANG.EN.ini"; //Filename of language settings. Leave blank for built-in default.
 
+$HTML_WYSIWYG_EDIT = false; //Enable WYSIWYG mode when editing HTML files?
+
 $MAX_ATTEMPTS  = 3;   //Max failed login attempts before LOGIN_DELAY starts.
 $LOGIN_DELAY   = 10;  //In seconds.
 $MAX_IDLE_TIME = 600; //In seconds. 600 = 10 minutes.  Other PHP settings may limit its max effective value.
@@ -106,6 +108,7 @@ if (is_file($config_file)) {
 		'HASHWORD',
 		'SALT',
 		'LANGUAGE',
+		'HTML_WYSIWYG_EDIT',
 		'config_stypes');
 
 	# Loop through options and overwrite default configuration
@@ -138,7 +141,7 @@ $WEB_ROOT  = URLencode_path(basename($DOC_ROOT)).'/';
 $WEBSITE   = $_SERVER["HTTP_HOST"].'/';
 $LOGIN_ATTEMPTS = $DOC_ROOT.trim($_SERVER["SCRIPT_NAME"],'/').'.invalid_login_attempts';
 
-$valid_pages = array("hash", "login","logout","index","edit","upload","uploaded","newfile","copy","rename","delete","newfolder","renamefolder","deletefolder" );
+$valid_pages = array("hash", "login","logout","index","edit","iframe_edit","upload","uploaded","newfile","copy","rename","delete","newfolder","renamefolder","deletefolder" );
 
 $INVALID_CHARS = '< > ? * : " | / \\'; //Illegal characters for file/folder names.
 $INVALID_CHARS_array = explode(' ', $INVALID_CHARS); // (Space deliminated)
@@ -1162,8 +1165,11 @@ function Edit_Page_buttons($text_editable, $too_large_to_edit) { //*************
 		<script>
 			//Set disabled here instead of via input attribute in case js is disabled.
 			//If js is disabled, user would be unable to save changes.
-			document.getElementById('save_file').disabled = "disabled";
-			document.getElementById('reset').disabled     = "disabled";
+			//Only disable buttons when not working with an iframe:
+			if (!document.getElementById("html_editor")) {
+				document.getElementById('save_file').disabled = "disabled";
+				document.getElementById('reset').disabled     = "disabled";
+			}
 		</script>
 	<?php } ?>
 	<?php echo $Button.hsc($_['Ren_Move']).$ACTION ?>rename'">
@@ -1179,9 +1185,31 @@ function Edit_Page_buttons($text_editable, $too_large_to_edit) { //*************
 
 //******************************************************************************
 function Edit_Page_form($ext, $text_editable, $too_large_to_edit, $too_large_to_edit_message){ 
-	global $_, $ONESCRIPT, $param1, $param2, $param3, $filename, $itypes, $INPUT_NUONCE, $EX, $message, $MAX_IDLE_TIME;
+	global $_, $ONESCRIPT, $HTML_WYSIWYG_EDIT, $param1, $param2, $param3, $filename, $itypes, $INPUT_NUONCE, $EX, $message, $MAX_IDLE_TIME;
 ?>
-	<form id="edit_form" name="edit_form" method="post" action="<?php echo $ONESCRIPT.$param1.$param2.$param3 ?>">
+	<form id="edit_form" name="edit_form" onsubmit="return synchronize_data()" method="post" action="<?php echo $ONESCRIPT.$param1.$param2.$param3 ?>">
+		<script type="text/javascript">
+			function synchronize_data() {
+				var rc = true;
+
+				if (document.getElementById("html_editor")) {
+					// Get contents of body:
+					var content=document.getElementById("html_editor").
+					contentWindow.document.body.innerHTML;
+
+					// Whole html:
+					//var content=document.getElementById("html_editor").
+					//      contentWindow.document.documentElement.outerHTML;
+
+					// Save body into hidden input-field:
+					document.getElementById("content").value = content;
+
+					rc = true;
+				}
+
+				return rc;
+			}
+		</script>
 		<?php echo $INPUT_NUONCE; ?>
 <?php
 		if ( !in_array( strtolower($ext), $itypes) ) { //If non-image...
@@ -1191,6 +1219,27 @@ function Edit_Page_form($ext, $text_editable, $too_large_to_edit, $too_large_to_
 
 			}elseif ( $too_large_to_edit ) {
  				echo '<p class="edit_disabled">'.$too_large_to_edit_message.'</p>';
+
+			}elseif (in_array($ext, array('html', 'htm')) && $HTML_WYSIWYG_EDIT) {
+				# Embed iframe
+				echo '<input type="hidden" name="filename" id="filename"
+					value="',hsc($filename),'">
+					<input type="hidden" name="content" id="content">
+					<input type="hidden" name="wysiwyg" value="1">
+					<iframe id="html_editor" style="border:1px solid #000;"
+						src="?i=',URLencode_path($ipath),
+						'&f=',rawurlencode(basename($filename)),
+						'&p=iframe_edit"
+						width="100%" height="350"></iframe>';
+
+				# Enable browser-builtin WYSIWYG editor for the whole document with JavaScript
+				echo '<script type="text/javascript">
+					window.onload = function() {
+						// Define not with var, so it stays global:
+						editor = document.getElementById("html_editor");
+						editor.contentDocument.designMode = "On";
+					}
+					</script>';
 
 			}else{
 				if (PHP_VERSION_ID  < 50400) {  // 5.4.0
@@ -1294,10 +1343,79 @@ hsc($_['too_large_to_view_02']).'<br>'.hsc($_['too_large_to_view_03']).'<br>'.hs
 
 
 
+/**
+ * Outputs the HTML of the choosen file, with disharmed JavaScript
+ */
+function Output_HTML() { //*****************************************************
+	global $filename;
+
+	# Open and read file
+	$filecontent = file_get_contents($filename);
+
+	# Extract body:
+	# $body = preg_replace("/.*<body[^>]*>|<\/body>.*/si", "", $filecontent);
+
+	# Make JavaScript in body disfunctional,
+	# because it can modify the HTML code
+	# on-the-fly. When saving the modified 
+	# HTML code, the JavaScript additions
+	# cannot get stripped out.
+	# Probably the following events should
+	# get searched and disharmed too:
+	#   - onabort
+	#   - onblur
+	#   - onchange
+	#   - onclick
+	#   - ondblclick
+	#   - onerror
+	#   - onfocus
+	#   - onkeydown
+	#   - onkeypress
+	#   - onkeyup
+	#   - onload
+	#   - onmousedown
+	#   - onmousemove
+	#   - onmouseout
+	#   - onmouseover
+	#   - onmouseup
+	#   - onreset
+	#   - onresize
+	#   - onselect
+	#   - onsubmit
+	#   - onunload
+	echo str_ireplace(
+		array('<script', '/script>'),
+		array('<OFCMSscript', '/OFCMSscript>'),
+		$filecontent);
+
+	# Prevent other OFCMS functions to fire:
+	exit;
+}//End Output_HTML *************************************************************
+
+
+
+
 function Edit_response(){ //***If on Edit page, and [Save] clicked *************
 	global $_, $EX, $message, $filename;
 	$filename = $_POST["filename"];
 	$content  = $_POST["content"];
+
+	// Save HTML posted per iframe/WYSIWYG?
+	if (isset($_POST['wysiwyg']) && $_POST['wysiwyg']) {
+		// Restore Javascript
+		$content = str_ireplace(
+			array('<OFCMSscript', '/OFCMSscript>'),
+			array('<script', '/script>'),
+			$content);
+
+		// Inject posted body into file-body:
+		$html = file_get_contents($filename);
+		$html = preg_replace(
+			'/(<body[^>]*>).*(<\/body>)/si',
+			'\\1' . $content . '\\2',
+			$html);
+		$content = $html;
+	}
 
 	$bytes = file_put_contents($filename, $content);
 
@@ -2268,6 +2386,12 @@ if( PHP_VERSION_ID < 50000 ) { exit("OneFileCMS requires PHP5 to operate. Tested
 if ( is_file($LANGUAGE) ) { $_ = parse_ini_file($LANGUAGE); }
 else                      { Default_Language(); }
 
+
+// Output HTML inside iframe, without regenerating the session-id.
+if ($_GET['p'] == 'iframe_edit') {
+	Get_GET();  
+	Output_HTML();
+}
 
 Session_Startup(); 
 
