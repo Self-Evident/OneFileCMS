@@ -79,7 +79,7 @@ Well, because "OneFileFileManagerTextEditor" just doesn't have the same ring to 
 
 ### Multi-Language Support?
 
-Yes!  (But only English and German is available so far...)
+Yes!  (But only English, Spanish and German is available so far...)
 
 ### Can I have more than one username/password?
 
