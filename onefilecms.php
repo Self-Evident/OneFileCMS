@@ -1045,10 +1045,17 @@ function Login_Page() { //******************************************************
 		<label for="username"><?php echo hsc($_['login_txt_01']) ?></label>
 		<input type="text" name="username" id="username" class="login_input" >
 		<label for="password"><?php echo hsc($_['login_txt_02']) ?></label>
-		<input type="password" name="password" id="password" class="login_input">
+		<input type="password" name="password" id="password" onChange="javascript:encryptPassword();" class="login_input">
 		<input type="submit" class="button" value="<?php echo hsc($_['Enter']) ?>">
 	</form>
-	<script>document.getElementById('username').focus();</script>
+	<script>
+	document.getElementById('username').focus();
+	
+    //Password encryptation
+    function encryptPassword(){
+      document.getElementById("password").value = Sha1.hash(document.getElementById("password").value, true);
+    }
+	</script>
 <?php 
 } //end Login_Page() ***********************************************************
 
@@ -1077,8 +1084,8 @@ function Login_response() { //**************************************************
 	}
 
 	//Validate password
-	if ($USE_HASH) { $VALID_PASSWORD = (hashit($_POST['password']) == $HASHWORD); }
-	else           { $VALID_PASSWORD = (       $_POST['password']  == $PASSWORD); }
+	if ($USE_HASH) { $VALID_PASSWORD = (hashit($_POST['password']) == sha1($HASHWORD)); }
+	else           { $VALID_PASSWORD = (       $_POST['password']  == sha1($PASSWORD)); }
 
 	//validate login.  
 	if ( ($_POST['password'] == "") && ($_POST['username'] == "") )  { ; //Ignore attempt if username & password are blank.
@@ -2426,6 +2433,9 @@ header('Content-type: text/html; charset=UTF-8');
 <meta name="robots" content="noindex">
 
 <title><?php echo $config_title.' - '.Page_Title() ?></title>
+
+<script type="text/javascript" src="http://www.movable-type.co.uk/scripts/utf8.js"></script>
+<script type="text/javascript" src="http://www.movable-type.co.uk/scripts/sha1.js"></script>
 
 <?php style_sheet(); ?>
 
