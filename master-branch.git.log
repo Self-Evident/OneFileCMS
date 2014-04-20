@@ -1,3 +1,19 @@
+commit d1b0bd328bbdc791ca6ecc07b57ec2aa934d9035
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Sun Apr 20 17:50:00 2014 -0400
+
+    Version 3.5.17
+    Moved ob_start() to very top of file.
+    Moved basic security & error log settings to top of file, just after version #.
+    Improved responses to Left & Right arrows by allowing for skips in tabindex's.
+     (ex: 1,2,3,5,6,10...)
+    Index_Page_scripts() : Added $TABINDEX_XBOX for the message box '[X]' box.
+    Display_Messages(): use $tabindex_xbox.
+    Reordered onmousedown and on_Tab_down functions to that order.
+    In on_Tab_down, renamed/gave a couple var's more intuitive names.
+    Uncheck "Clear All" ckbox on resorts, as file ckboxes are.
+    Adjusted some css.
+
 commit 551410a76fbeb50c58327555eadf13f12859d008
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Fri Apr 4 00:30:00 2014 -0400
