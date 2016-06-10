@@ -1,3 +1,19 @@
+commit 24617e1d1a7d4f2d6bb62e464d4294f2993ae25a
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Thu Jun 9 23:09:00 2016 -0400
+
+    Version 3.5.18
+    Renamed a few global configurable variables in a more consistant manor with the rest.
+    $EXLUDED_FILES now ignores folders, as it doesn't make sense or work well overall otherwise.
+    On index page, Enter can be used to select/deselect checkboxes.
+    on_Tab_down(): removed superfluous returns.
+    Improved Up/Down arrow key use: "cursor" (ie: focus), can now nav up & down [Move][Copy][Del][x]
+    Changed PU & PD key responses to include [Logo] & [Admin] instead of skipping them.
+    Fixed minor bug where PU (or was it PD?) got "stuck" when in an empty folder and on the "../" row,
+    Check if (FR == FROWS) before if (FR == 0), so AD still passes thru [Admin]
+    And some css: #del_backup
+    Fixed minor typo in $_['edit_caution_02']: "...OneFileCM.'; => "...OneFileCMS.';
+
 commit d1b0bd328bbdc791ca6ecc07b57ec2aa934d9035
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Sun Apr 20 17:50:00 2014 -0400
