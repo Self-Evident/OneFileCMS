@@ -1,3 +1,23 @@
+commit 6532ce35291e837ba629ba4cf54b2725051b3cdb
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Thu Jun 16 18:50:00 2016 -0400
+
+    Version 3.5.19
+    Added line numbering to edit page: Line_Numbering() js functions & associated css & html.
+    	(This was way more work than anticipated... :)
+    Added Word wrap toggle to edit page. (for editable files only.)
+    	(This was way more work than anticipated... :)
+    Added $_['Word_Wrap'],  $_['on'],  $_['off']
+    	(This was easy.)
+    Added $WORD_WRAP & $TAB_SIZE config variables.
+    	(This was easy.)
+    In Display_Messages():Changed ternaries to if/thens.  Because simpler.  (also fixed a typo)
+    In Countdown(), made $message_box local (was no var, don't know why).
+    In pre_validate_pwun(), a little cleanup.
+    Renamed a few global var's from lowercase to all caps:
+    	$MESSAGE, $EXCLUDED_LIST, $ETYPES, $STYPES, $ITYPES, $FTYPES, $FCLASSES
+    css: box-sizing: border-box, plus subsequent changes...
+
 commit 24617e1d1a7d4f2d6bb62e464d4294f2993ae25a
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Thu Jun 9 23:09:00 2016 -0400
