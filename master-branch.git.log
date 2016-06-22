@@ -1,3 +1,22 @@
+commit e32d149056bc3204f960194379473b0600a86309
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Tue Jun 21 22:15:00 2016 -0400
+
+    Version 3.5.20
+    Fixed sporadic directory-won't-display issue: moved initial Sort_and_Show() to end of page.
+    Fixed wrapping & line-numbering issue when toggling between wrap on & wrap off.
+    Added line-numbers to read-only files also. (OFCMS || $too_large_to_edit)
+    Added cookie for word_wrap. (now called line_wrap)
+    Added (bytes) to Size header of file listing, and removed "B" suffix from sizes.
+    In sort_DIRECTORY(), changed ternaries to if/thens.  Because simpler.
+    Index Page: "Home" key now just goes to first row (../).
+    On Edit Page, initial textarea cursor location set to start of file.
+    Cursor postion/selection saved when toggling between Wide/Normal views, and Wrap on/off.
+    Edit Page: Word Wrap now called Line Wrap, and switched from radio buttons to just a button to toggle wrap on/off.
+    Tweeked X_box style.
+    Adjusted/simplified some css for the index page buttons & all svg icons.
+    Added $_['Line_Wrap'] to language files.
+
 commit 6532ce35291e837ba629ba4cf54b2725051b3cdb
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Thu Jun 16 18:50:00 2016 -0400
