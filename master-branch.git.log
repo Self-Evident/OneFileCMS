@@ -1,3 +1,17 @@
+commit d266dbf519b6709f326f135aafe1662570984054
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Sun Jun 26 18:50:00 2016 -0400
+
+    Version 3.5.21
+    [Line Wrap on/off] button: added underline on current state (on or off).
+    Removed some css & js from when [Word Wrap *on *off] used radio buttons.
+    Rearranged Edit_Page_scripts a bit in a hopefully more logical way.
+    Set height of both line_numbers & file_editor with css.
+    Removed setSelRange() in lieu of selectionStart/End in Reset_File().
+    Moved Toggle_Line_Wrap() out of Line_Numbering(), & into "global" scope of Edit_Page_Scripts().
+    Added some basic validation to $TAB_SIZE & its js conterpart TAB_SIZE.
+    Updated OneFileCMS_structure.txt
+
 commit e32d149056bc3204f960194379473b0600a86309
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Tue Jun 21 22:15:00 2016 -0400
