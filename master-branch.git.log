@@ -1,3 +1,25 @@
+commit 081b842487a7fbbea00bc0b4bf6d75296e6ec9ab
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Tue Sep 5 19:48:16 2017 -0400
+
+    v3.5.22 - updated changelog
+
+commit 6c965119900742e7e1477e777965ef17b17022d5
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Tue Sep 5 19:21:47 2017 -0400
+
+    Version 3.5.22
+    [Wide View] / [Normal View] button only available on edit page when $text_editable.
+    Added if (Toggle_Wrap)... since not available if file not editable.
+    Wrapped some function calls in "if (File_textarea) {...}" because needed.
+    Moved some inline events from Index_Page_buttons_top() to Index_Page_events().
+    Removed:  <style>#message_box {min-height: 2em;}</style>  from Change_PWUN_Page().
+    Added file permissions to Directory List:  sogw (s(u/g)id/sticky owner group world)
+    	ex: 0644
+    	affected: Create_Table_for_Listing(), Init_Dir_table_rows(), Assemble_Insert_row(), Build_Directory()
+    changed js array delclarations from New Array() to [].
+    Removed <head> & <body> tags, as they're superfluous and just clutter things up.
+
 commit d266dbf519b6709f326f135aafe1662570984054
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Sun Jun 26 18:50:00 2016 -0400
