@@ -205,7 +205,7 @@ mb_detect_order("UTF-8, ASCII, Windows-1252, ISO-8859-1");
 if (php_uname("s") == 'Windows NT') {$ENC_OS = 'Windows-1252';}
 else								{$ENC_OS = 'UTF-8';}
 
-$DOC_ROOT = $_SERVER['DOCUMENT_ROOT'].'/'; //root folder of website.
+$DOC_ROOT = dirname(__FILE__); //root folder of website.
 $DOC_ROOT_OS = Convert_encoding($DOC_ROOT);
 
 //Allow OneFileCMS.php to be started from any dir on the site.
@@ -1232,7 +1232,7 @@ function Page_Header() {//******************************************************
 		echo $on_php;
 		
 		echo '<div class="nav">';
-			echo '<b><a id=website href="/" tabindex='.$TABINDEX++.' target="_blank">'.$favicon_img.' '.hsc($WEBSITE).'</a></b>';
+			echo '<b><a id=website href="./" tabindex='.$TABINDEX++.' target="_blank">'.$favicon_img.' '.hsc($WEBSITE).'</a></b>';
 			if ($page != "login") {	echo ' | <a id=logout tabindex='.$TABINDEX++.' href="'.$ONESCRIPT.'?p=logout">'.hsc($_['Log_Out']).'</a>'; }
 		echo '</div><div class=clear></div>';
 	echo '</div>';//<!-- end header -->
@@ -1280,8 +1280,8 @@ function show_image() {//*******************************************************
 	echo hsc($_['show_img_msg_01']).round($SCALE*100).
 		 hsc($_['show_img_msg_02']).' '.$img_info[0].' x '.$img_info[1].').</p>';
 	echo '<div class=clear></div>'."\n";
-	echo '<a  href="/'.URLencode_path($IMG).'" target="_blank">'."\n";
-	echo '<img src="/'.URLencode_path($IMG).'" width="'.($img_info[$W] * $SCALE).'"></a>'."\n";
+	echo '<a  href="./'.URLencode_path($IMG).'" target="_blank">'."\n";
+	echo '<img src="./'.URLencode_path($IMG).'" width="'.($img_info[$W] * $SCALE).'"></a>'."\n";
 }//end show_image() //**********************************************************
 
 
@@ -2265,7 +2265,7 @@ function Edit_Page() {//********************************************************
 	else									  					 { $header2 = hsc($_['edit_h2_1']); }
 
 	echo '<h2 id="edit_header">'.$header2.' ';
-	echo '<a class="h2_filename" href="/'.URLencode_path($filename).'" target="_blank" title="'.hsc($_['Open_View']).'">';
+	echo '<a class="h2_filename" href="./'.URLencode_path($filename).'" target="_blank" title="'.hsc($_['Open_View']).'">';
 	echo hsc(basename($filename)).'</a>';
 	echo '</h2>'."\n";
 
