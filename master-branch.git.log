@@ -1,3 +1,24 @@
+commit c81eef43cc187387d8d6e3ad1211aae752ea8b44
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Fri Sep 8 12:58:46 2017 -0400
+
+    Version 3.5.23
+    OneFileCMS no longer restricted to public_html.
+      Affected: $DOC_ROOT, $ACCESS_ROOT, $DEFAULT_PATH, and a couple localized $ipath's.
+      Also affected how optional config & laguage files are referenced.
+      Maybe some other stuff too, I forget...
+    Added session path to Admin page.
+    Added "Connected to: [hostname]" to Admin page.
+    Added $_['admin_txt_03'], $_['admin_txt_04'], & $_['must_be_decendant'] to langauge files
+    Added $_['Invalid'] to language files, but not yet used.  Because.
+    Added $DEFAULT_PATH config variable, for $ipath if $ipath is not present or is invalid.
+    Added Set_IS_OFCMS().
+    Removed all usage of $WEB_ROOT. It was based on $DOC_ROOT, which has changed slightly.
+    Changed $DOC_ROOT. Now only defines default folder for $ACCESS_ROOT.
+    Updated OneFileCMS.config.SAMPLE.php
+    Increased $MAX_EDIT_SIZE from 200000 to 250000.
+    And only a couple minor css changes!
+
 commit 081b842487a7fbbea00bc0b4bf6d75296e6ec9ab
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Tue Sep 5 19:48:16 2017 -0400
