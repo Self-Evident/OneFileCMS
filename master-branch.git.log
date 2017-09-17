@@ -1,3 +1,15 @@
+commit 49e6c968402e341b2afbe3885a3cfbe7bafb2252
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Sun Sep 17 16:37:16 2017 -0400
+
+    Version 3.6
+    Fixed minor bug in $ACCESS_ROOT. (Even if set to root, was unable to acually access root...)
+    Some prep work for allowing editing of file permissions. Not yet editable.
+    For js, created E() function for document.getElementById().  Because shorter & easier to read.
+    document.onkeydown => E("main").onkeydown
+    Proper-cased common_scripts() to Common_Scripts().
+    Some css.
+
 commit c81eef43cc187387d8d6e3ad1211aae752ea8b44
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Fri Sep 8 12:58:46 2017 -0400
