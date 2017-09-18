@@ -1,3 +1,32 @@
+commit e58a5949803316a7e8c2f0801c8c480ccdcc7336
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Mon Sep 18 01:22:05 2017 -0400
+
+    Version 3.6.01
+    
+    Fixed minor issue of not showing site's favicon next to site name.
+    Fixed sort-of minor bug introduced in 3.5.23 on edit page:
+      Wasn't showing images, and couldn't view file by clicking on filename in,
+    	Editing: filename
+
+commit 7c9bee3e6a1bc0fb9c330df4aebc0118e77125dd
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Sun Sep 17 18:15:40 2017 -0400
+
+    Updated another stupid typo in the readme.
+
+commit 6c42bca3abe9685231032ecfc486d8dc5a909744
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Sun Sep 17 18:00:49 2017 -0400
+
+    Updated a couple typos in the readme.
+
+commit 28fc252832aca40616aba39975e8872b3eb234c4
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Sun Sep 17 17:31:17 2017 -0400
+
+    Updated readme, change log, and optional external css.
+
 commit 49e6c968402e341b2afbe3885a3cfbe7bafb2252
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Sun Sep 17 16:37:16 2017 -0400
