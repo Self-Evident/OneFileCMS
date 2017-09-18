@@ -1,3 +1,18 @@
+commit f108377b2bb837920bfd8db7fe5b11925068dcde
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Mon Sep 18 16:52:55 2017 -0400
+
+    Version 3.6.02
+    
+    Fixed minor tabindex bug introduced when added file permissions.
+    Check for and attempt to set session_save_path($user_tmp_path).
+    Increased default $PRE_ITERATIONS from 1000 to 10000. Had kept low as IE8 was slow.
+      If IE8 support is needed, it can be changed back.
+    Removed a couple redundant $_[] language values:
+       $_['login_txt_01']  = 'Username:';
+       $_['login_txt_02']  = 'Password:';
+    A couple css tweaks.
+
 commit e58a5949803316a7e8c2f0801c8c480ccdcc7336
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Mon Sep 18 01:22:05 2017 -0400
