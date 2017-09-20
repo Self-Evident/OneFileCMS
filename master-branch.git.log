@@ -1,3 +1,17 @@
+commit fca8a03126b34dd777882d5b29dba369f970eb01
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Wed Sep 20 18:00:00 2017 -0400
+
+    Version 3.6.03
+    
+    Removed Rename/Delete/Edit options for readonly files.
+      (previously would simple have generated an error.)
+    Some more prep for eventual option to edit file perms.
+    Some improvement to cursor control feedback (bg colors) handling.
+    (evidently I just discovered onblur & onfocus)
+    Removed $_['edit_txt_04'] (not used)
+    Added $_['edit_txt_05']
+
 commit f108377b2bb837920bfd8db7fe5b11925068dcde
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Mon Sep 18 16:52:55 2017 -0400
