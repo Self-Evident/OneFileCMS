@@ -1,3 +1,14 @@
+commit addbe0414e8c37ce6e34438015fda029dc60fcea
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Wed Sep 20 23:17:00 2017 -0400
+
+    Version 3.6.04
+    
+    ckbox bgcolors for focus & blur are now handled by onfocus & onblur events.
+    (Instead of the other method - a convoluted buckshot of code...)
+    Removed a few one-time use vars of elements since E('element_id') is almost as short.
+    (As opposed to document.getElementById('element_id')...)
+
 commit fca8a03126b34dd777882d5b29dba369f970eb01
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Wed Sep 20 18:00:00 2017 -0400
