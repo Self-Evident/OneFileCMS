@@ -1,3 +1,14 @@
+commit 25780d85188d7d985aa670c9bba852940e8d3887
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Sun Sep 24 18:15:08 2017 -0400
+
+    Version 3.6.05
+    
+    On index page, changed from <form> name to id.  document.mcdselect => E('mcdselect')
+    Fixed a couple bugs in keyboard navigation when there's only one item in current diretory.
+     - Couldn't "arrow up" when in the file row [M][C][D][x][perms] [Filename]
+     - It was submitting on enter when on checkboxes.
+
 commit addbe0414e8c37ce6e34438015fda029dc60fcea
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Wed Sep 20 23:17:00 2017 -0400
