@@ -1,3 +1,28 @@
+commit 066e15b215f729c3640aa855f9f626133035b4ab
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Wed Sep 27 23:08:49 2017 -0400
+
+    Updated Langauge Files etc.
+
+commit a028db159bc1d3e0a19cc90557d1a80d2560e97d
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Wed Sep 27 17:43:47 2017 -0400
+
+    Version 3.6.06
+    
+    Added ability to edit file permissions:
+      PHP: Update_File_Permissions()
+      js: Perms_onkeydown()
+          Directory_Events()
+          Validate_and_Post()
+          Enable_Edit_Perms()
+          Octal_Input_Only()
+          Perms_Update_Response()
+          Post_New_File_Perms()
+    
+    Removed period at end of value:  $_['Update_failed'] = 'Update failed';
+    Still needs some new langauge $_[] values, but I'll get those next commit.
+
 commit 25780d85188d7d985aa670c9bba852940e8d3887
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Sun Sep 24 18:15:08 2017 -0400
