@@ -1,3 +1,19 @@
+commit 1004bf4fc09859f8405d13ccfe9117974c4e126c
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Fri Sep 29 10:35:15 2017 -0400
+
+    Version 3.6.07
+    New language values $_[] values: $_['Permissions_msg_1'], $_['Press_Enter'], $_['Enter_to_edit']
+    Changed $_['Update_failed']
+     from 'Update failed - could not save file.'
+       to 'Update failed.'
+    Restored $_['edit_txt_04'] to language files. (Had inadvertently removed it previously.)
+    Added Format_Perms(), in both php & js: [7777] [ugt rwx rwx rwx]  (js version not yet used.)
+    Added Insert_mov_del_ckbox() to index page js.  (Prep for future improvements.)
+    Added Cancel_Perm_Changes() to index page js.
+    Improved handling of ckbox & permission field events.
+    Cleaned up some inline css.
+
 commit 066e15b215f729c3640aa855f9f626133035b4ab
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Wed Sep 27 23:08:49 2017 -0400
