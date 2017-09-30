@@ -1,3 +1,19 @@
+commit bae1ec972f4bc21d50cd4c9b2bcb70fcfd1fada5
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Sat Sep 30 11:00:08 2017 -0400
+
+    Version 3.6.08
+    [Mov], [Del], & [X] now show/hide as needed as perms are changed (owner write bit).
+    Some restructuring/refactoring in:
+      Init_Dir_table_rows(), Insert_mov_del_ckbox(), Assemble_Insert_row(), Build_Directory(),
+      Split Insert_mov_del_ckbox() into Assemble_mdx() & Insert_mdx().
+    Fixed minor perms bug (if changed perms, then resorted dir list, would show old perms value).
+      Perms_Update_Response()
+    Index_Page_events() - moved some "hard coded" colors to .classes
+    In header, "(on php 5.x.x)" version & phpinfo link now only shows on Admin page.
+    Minor wording change in readme "Limitations" section.
+    Tweaked some class names. And some css.
+
 commit 1004bf4fc09859f8405d13ccfe9117974c4e126c
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Fri Sep 29 10:35:15 2017 -0400
