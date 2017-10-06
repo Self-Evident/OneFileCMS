@@ -1,3 +1,39 @@
+commit 06ed75e100ffabfc0154abfb65be125b6ee2f428
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Fri Oct 6 14:30:00 2017 -0400
+
+    Version 3.6.10
+    Fixed minor bug introduced in 3.6.09:
+      removed unneeded client side JSON.parse of the result of PHP's json_encode($DIRECTORY_DATA).
+    Re-worked the Index page keyboard nav a bit.
+    Fixed issue of stat() errors on dead links.  (by using lstat(), of course)
+    Directory list now shows link targets:[ symlinkedfile -> /path/to/linked/file ]
+    Some restructure of Get_DIRECTORY_DATA().
+
+commit ccac666af6d5a1f2b5c5bd22580dc6b4b0939330
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Wed Oct 4 17:00:00 2017 -0400
+
+    Version 3.6.09
+    When focus is in path header, HOME & END now goto ID=path_0 & ID=path_(last) respectively.
+       Otherwise, HOME & END goto f0c.. or f(last)c..
+    Added file owner & group (when available) to dir list.
+    Removed hsc() of early output messages when updating permissions.
+    $ckbox events are now only assigned in Insert_mdx().
+    Some misc code improvements in Timeout_Timer(), Create_Table_for_Listing(), & other places.
+    
+    In index page js, variaible row split to frow & drow, depending on use.
+       See Assemble_Insert_row() for description/explanation.
+    Send_directory_data_to_js() simplified & rolled into Index_Page().
+       Now using (php) json_encode & (js) JSON.parse to send directory data to js.
+    New language values: $_['Group'], $_['User']
+
+commit 509ee2adcecdee3496ba29937ce16cbf7d912f22
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Sat Sep 30 12:16:43 2017 -0400
+
+    Updated optional language & css files.
+
 commit bae1ec972f4bc21d50cd4c9b2bcb70fcfd1fada5
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Sat Sep 30 11:00:08 2017 -0400
