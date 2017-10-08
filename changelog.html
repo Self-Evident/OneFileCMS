@@ -1,5 +1,20 @@
 <h1>OneFileCMS Change Log</h1>
 
+<h3>v3.6.12 (2017-10-08)</h3>
+
+<ul>
+<li>Admin page now shows username OneFileCMS is running as.</li>
+<li>Index &amp; Edit pages now indicate files that are not writable (rather than just responding with an error message after trying to edit/delete said files).</li>
+<li>When editing file permissions, message box shows current expanded perms [rwxrwxrwx] owner group :current user: <br />
+(But, can still only edit the octal form by the file name.)</li>
+</ul>
+
+<h3>v3.6.11 (2017-10-06)</h3>
+
+<ul>
+<li>Switched to php short tags: <code>&lt;?= ?&gt;</code>&nbsp; &nbsp; (from <code>&lt;?php echo ?&gt;</code>) &nbsp; &nbsp; Because I felt like it.  I wanted to years ago, in my beginning of this project, but my web host was still on some 5.3 version of php, and didn't always have 'em enabled. But now, as php is up to v7.something, and most hosts have, at least, php 5.4, it seems like a safe move at this point.  If not, oh well!</li>
+</ul>
+
 <h3>v3.6.10 (2017-10-06)</h3>
 
 <ul>
@@ -20,14 +35,8 @@
 
 <ul>
 <li>[Mov], [Del], &amp; [X] are unavailable if file is readonly.</li>
-<li>Some misc code improvements.</li>
-</ul>
-
-<h3>v3.6.07 (2017-09-29)</h3>
-
-<ul>
 <li>Fixed minor issue where if perms changed, new value not always displayed.</li>
-<li>A bit of restructure/refactor of perm &amp; Assemble<em>Insert</em>Row() related functions.</li>
+<li>A bit of restructure/refactor of perm &amp; Assemble_Insert_Row() related functions.</li>
 <li>"(on php 5.x.x)" version, and link to phpinfo, now only shows on Admin page.</li>
 <li>Andd some css...</li>
 </ul>

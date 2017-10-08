@@ -1,3 +1,27 @@
+commit b6368120e42c896e39850d08bcd8d6c7518aa357
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Sun Oct 8 11:27:41 2017 -0400
+
+    Version 3.6.12
+    Show username on Admin page.
+    Now checks if is_writable,  Dir list then hides [m]   [d][x] for files not writable.
+       Update_File_Permissions() & Edit_Page_...().
+    New function Get_File_Stats(), used by: Get_DIRECTORY_DATA, Edit_Page_buttons_top(), Edit_Page_form()
+    Enable_Edit_Perms(): added current perms [rwxrwxrwx] to msg.
+
+commit b780454830718099017645ad81de93c4ea11800f
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Sat Oct 7 22:57:57 2017 -0400
+
+    Version 3.6.11
+    - Switched to php short tags: <?= ?>.  Because I felt like it.  I wanted to years ago, in the beginning, but my web host was still on some 5.3 version of php, and didn't always have 'em enabled. But now that php is up to v7.something, and most hosts have, at least, php 5.4, it seems like a safe move at this point.  If not, oh well!
+
+commit 36c09df26767e707fbe2e48cf5e51ca82aa157be
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Fri Oct 6 15:09:27 2017 -0400
+
+    Updated langauge files & changelog.
+
 commit 06ed75e100ffabfc0154abfb65be125b6ee2f428
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Fri Oct 6 14:30:00 2017 -0400
