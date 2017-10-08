@@ -1,3 +1,19 @@
+commit d1ff5045ebeaea77434490beae83949fe37a0a11
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Sun Oct 8 18:59:26 2017 -0400
+
+    Version 3.6.13
+    Tweaked usage of $DOC_ROOT to "server/doc/root/" (no leading "/").
+    $MESSAGES from System_Setup() no longer reported on Login page, but are reported after login.
+    Minor restructure of Session_Startup().
+    Improved $ACCESS_ROOT & $DEFAULT_PATH a bit.
+
+commit 76f3917c55c80eb7567fb355c197bcb984d9ec3b
+Author: Self-Evident <selfevidenttruths@mail.com>
+Date:   Sun Oct 8 11:31:26 2017 -0400
+
+    Updated logs.
+
 commit b6368120e42c896e39850d08bcd8d6c7518aa357
 Author: Self-Evident <selfevidenttruths@mail.com>
 Date:   Sun Oct 8 11:27:41 2017 -0400
