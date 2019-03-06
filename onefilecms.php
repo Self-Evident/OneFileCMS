@@ -2965,8 +2965,8 @@ function Format_Perms($perms_oct) {//*******************************************
     //bits          8 4 2 1|8 4 2 1|8 4 2 1|8 4 2 1
 	//hex              F       F       F       F
 
-	$ugt = ['...', '..t', '.g.', '.gt', 'u..', 'u.t', 'ug.', 'ugt']; //SetUid SetGid sTicky
-	$rwx = ['---', '--x', '-w-', '-wx', 'r--', 'r-x', 'rw-', 'rwx'];
+	$ugt = array('...', '..t', '.g.', '.gt', 'u..', 'u.t', 'ug.', 'ugt'); //SetUid SetGid sTicky
+	$rwx = array('---', '--x', '-w-', '-wx', 'r--', 'r-x', 'rw-', 'rwx');
 
 	if (strlen($perms_oct) > 3) { $ugidsticky = substr($perms_oct, -4, 1); }
 	else 						{ $ugidsticky = 0; }
@@ -4302,8 +4302,8 @@ function Format_Perms(perms_oct) {//**********************************
     //bits          8 4 2 1 8 4 2 1 8 4 2 1 8 4 2 1
 	//hex              F       F       F       F
 
-	var ugt = ['---', '--t', '-g-', '-gt', 'u--', 'u-t', 'ug-', 'ugt']; //setUid setGid sTicky
-	var rwx = ['---', '--x', '-w-', '-wx', 'r--', 'r-x', 'rw-', 'rwx'];
+	var ugt = array('---', '--t', '-g-', '-gt', 'u--', 'u-t', 'ug-', 'ugt'); //setUid setGid sTicky
+	var rwx = array('---', '--x', '-w-', '-wx', 'r--', 'r-x', 'rw-', 'rwx');
 
 	if ((perms_oct.length * 1) > 3) { var ugidsticky = perms_oct.substr(-4, 1); }
 	else							{ var ugidsticky = 0; }
